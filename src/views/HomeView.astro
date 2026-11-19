@@ -23,6 +23,9 @@ const works = (
 
 const pad = (n: number): string => String(n).padStart(2, '0');
 const featured = works.filter((work) => work.data.featured);
+/** 没有 featured 作品时整块不渲染，避免首页出现一个空区块；ABOUT 顺位顶到 02 */
+const showFeatured = featured.length > 0;
+const aboutNumber = showFeatured ? t('home.about.number') : t('home.featured.number');
 const workHref = (work: (typeof works)[number]): string =>
   localizePath(`works/${slugFromEntryId(work.id)}/`, lang);
 
@@ -76,49 +79,51 @@ const skillTags = p.skills.flatMap((group) => group.items);
   </section>
 
   <!-- ------------------------------------------------------------------ -->
-  <!-- 02 / FEATURED —— 图左文右，第二个起左右交替                          -->
+  <!-- 02 / FEATURED —— 图左文右，第二个起左右交替；无 featured 时整块略过  -->
   <!-- ------------------------------------------------------------------ -->
-  <section class="wrap section" aria-labelledby="featured-heading">
-    <SectionHead
-      number={t('home.featured.number')}
-      title={t('home.featured.title')}
-      note={t('home.featured.note')}
-      id="featured-heading"
-    />
+  {showFeatured && (
+    <section class="wrap section" aria-labelledby="featured-heading">
+      <SectionHead
+        number={t('home.featured.number')}
+        title={t('home.featured.title')}
+        note={t('home.featured.note')}
+        id="featured-heading"
+      />
 
-    <div class="feature-list">
-      {featured.map((work, i) => (
-        <article class="feature">
-          <div class="feature__media">
-            <MediaFrame
-              poster={work.data.demo?.poster ?? work.data.cover}
-              video={work.data.demo?.video}
-              alt={work.data.coverAlt || work.data.title}
-              ratio="16 / 10"
-            />
-          </div>
-          <div class="feature__body">
-            <span class="feature__no meta">{pad(i + 1)}</span>
-            <h3 class="feature__title">
-              <a href={workHref(work)}>{work.data.title}</a>
-            </h3>
-            <p class="feature__tagline">{work.data.tagline}</p>
-            <p class="feature__stack meta">{work.data.stack.join(' · ')} · {work.data.year}</p>
-            <a class="feature__link" href={workHref(work)}>
-              {work.data.title} &rarr;
-            </a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+      <div class="feature-list">
+        {featured.map((work, i) => (
+          <article class="feature">
+            <div class="feature__media">
+              <MediaFrame
+                poster={work.data.demo?.poster ?? work.data.cover}
+                video={work.data.demo?.video}
+                alt={work.data.coverAlt || work.data.title}
+                ratio="16 / 10"
+              />
+            </div>
+            <div class="feature__body">
+              <span class="feature__no meta">{pad(i + 1)}</span>
+              <h3 class="feature__title">
+                <a href={workHref(work)}>{work.data.title}</a>
+              </h3>
+              <p class="feature__tagline">{work.data.tagline}</p>
+              <p class="feature__stack meta">{work.data.stack.join(' · ')} · {work.data.year}</p>
+              <a class="feature__link" href={workHref(work)}>
+                {work.data.title} &rarr;
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- ------------------------------------------------------------------ -->
   <!-- 03 / ABOUT                                                          -->
   <!-- ------------------------------------------------------------------ -->
   <section class="wrap section" aria-labelledby="about-heading">
     <SectionHead
-      number={t('home.about.number')}
+      number={aboutNumber}
       title={t('home.about.title')}
       id="about-heading"
     />

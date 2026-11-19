@@ -96,58 +96,65 @@ export default function WorksExplorer({ items, labels }: Props): JSX.Element {
 
   const countText = labels.resultCount.replace('{n}', String(filtered.length));
 
+  /** 只有一个作品时筛选与搜索无从可选，留一排「全部 1 / … 1」的空控件只是噪音 */
+  const showControls = items.length > 1;
+
   return (
     <div className="explorer">
-      <div className="explorer__controls">
-        <div className="explorer__group">
-          <span className="explorer__label meta" id="works-filter-label">
-            {labels.filterLabel}
-          </span>
-          <div className="chips" role="group" aria-labelledby="works-filter-label">
-            <button
-              type="button"
-              className="chip"
-              aria-pressed={activeTags.length === 0}
-              onClick={() => setActiveTags([])}
-            >
-              {labels.all}
-              <span className="chip__count">{items.length}</span>
-            </button>
-            {allTags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                className="chip"
-                aria-pressed={activeTags.includes(tag)}
-                onClick={() => toggleTag(tag)}
-              >
-                {tag}
-                <span className="chip__count">{tagCounts[tag] ?? 0}</span>
-              </button>
-            ))}
+      {showControls && (
+        <>
+          <div className="explorer__controls">
+            <div className="explorer__group">
+              <span className="explorer__label meta" id="works-filter-label">
+                {labels.filterLabel}
+              </span>
+              <div className="chips" role="group" aria-labelledby="works-filter-label">
+                <button
+                  type="button"
+                  className="chip"
+                  aria-pressed={activeTags.length === 0}
+                  onClick={() => setActiveTags([])}
+                >
+                  {labels.all}
+                  <span className="chip__count">{items.length}</span>
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className="chip"
+                    aria-pressed={activeTags.includes(tag)}
+                    onClick={() => toggleTag(tag)}
+                  >
+                    {tag}
+                    <span className="chip__count">{tagCounts[tag] ?? 0}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="explorer__group" role="search">
+              <label className="explorer__label meta" htmlFor="works-search">
+                {labels.searchLabel}
+              </label>
+              <input
+                id="works-search"
+                className="explorer__input"
+                type="search"
+                name="q"
+                value={query}
+                placeholder={labels.searchPlaceholder}
+                autoComplete="off"
+                onChange={(event) => setQuery(event.currentTarget.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="explorer__group" role="search">
-          <label className="explorer__label meta" htmlFor="works-search">
-            {labels.searchLabel}
-          </label>
-          <input
-            id="works-search"
-            className="explorer__input"
-            type="search"
-            name="q"
-            value={query}
-            placeholder={labels.searchPlaceholder}
-            autoComplete="off"
-            onChange={(event) => setQuery(event.currentTarget.value)}
-          />
-        </div>
-      </div>
-
-      <p className="explorer__count meta" aria-live="polite">
-        {countText}
-      </p>
+          <p className="explorer__count meta" aria-live="polite">
+            {countText}
+          </p>
+        </>
+      )}
 
       {filtered.length > 0 ? (
         <ul className="explorer__grid">

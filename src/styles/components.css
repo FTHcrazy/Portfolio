@@ -632,6 +632,41 @@
   list-style: none;
 }
 
+/* 只有一个作品时，auto-fill 会把卡片压成四分之一宽、右边空一大片。
+   这种情况下让卡片独占一行、图左文右，版面才立得住。 */
+.explorer__grid:has(> li:only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 901px) {
+  .explorer__grid:has(> li:only-child) .work-card__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+  }
+
+  .explorer__grid:has(> li:only-child) .work-card__media {
+    margin-bottom: 0;
+  }
+
+  /* 让资料列与图片等高，标签被压到卡片底部，右侧不再吊在半空 */
+  .explorer__grid:has(> li:only-child) .work-card__body {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  .explorer__grid:has(> li:only-child) .work-card__title {
+    font-size: 1.6rem;
+  }
+
+  .explorer__grid:has(> li:only-child) .work-card__summary {
+    font-size: 1rem;
+    max-width: 46ch;
+  }
+}
+
 .explorer__empty {
   padding: clamp(28px, 5vw, 52px) 0;
   border-top: var(--rule);
@@ -726,6 +761,17 @@
 .gallery__item {
   margin: 0;
   min-width: 0;
+}
+
+/* 首图通栏：先给一张大的「主画面」，再以两列铺细节，
+   读者不用在三张等大的图里猜哪张最重要。 */
+.gallery__item:first-child {
+  grid-column: 1 / -1;
+}
+
+.gallery__item:first-child .gallery__caption {
+  font-size: 0.9rem;
+  color: var(--ink-2);
 }
 
 /* 画廊项：媒体由 MediaFrame 渲染，trigger 是覆盖其上的透明按钮 */

@@ -2,7 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import type { Lang } from '../i18n/ui';
 import { langFromEntryId, localizePath, slugFromEntryId, useTranslations } from '../i18n/utils';
-import { getProfile, mailtoHref } from '../data/profile';
+import { getProfile } from '../data/profile';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHead from '../components/SectionHead.astro';
 import MediaFrame from '../components/MediaFrame.astro';
@@ -42,7 +42,6 @@ const demo = data.demo;
 const demoUrl = demo?.url;
 const demoVideo = demo?.video;
 const demoPoster = demo?.poster ?? data.cover;
-const demoNote = demo?.note ?? t('work.demo.availableOnRequest');
 
 const metaStack = data.stack.join(' · ');
 const hasMeta = Boolean(data.role || data.duration || data.stack.length > 0 || data.links.length > 0);
@@ -132,50 +131,43 @@ const hasMeta = Boolean(data.role || data.duration || data.stack.length > 0 || d
       </section>
     )}
 
-    <!-- 02 / 现场演示 -->
-    <section class="wrap section" aria-labelledby="demo-heading">
-      <SectionHead
-        number={t('work.demo.number')}
-        title={t('work.demo.title')}
-        id="demo-heading"
-      />
+    <!-- 02 / 现场演示：只有真的挂了视频或在线演示才出现。
+         没有内容时整块不渲染 —— 访客不必看到「暂无演示」这类后台口吻。 -->
+    {(demoVideo || demoUrl) && (
+      <section class="wrap section" aria-labelledby="demo-heading">
+        <SectionHead
+          number={t('work.demo.number')}
+          title={t('work.demo.title')}
+          id="demo-heading"
+        />
 
-      {demoVideo && (
-        <div class="demo-media">
-          <MediaFrame poster={demoPoster} video={demoVideo} alt={coverAlt} ratio="16 / 10" />
-        </div>
-      )}
+        {demoVideo && (
+          <div class="demo-media">
+            <MediaFrame poster={demoPoster} video={demoVideo} alt={coverAlt} ratio="16 / 10" />
+          </div>
+        )}
 
-      {demoUrl ? (
-        <div class="demo-live">
-          <div class="demo-frame">
-            <iframe
-              src={demoUrl}
-              title={`${t('work.demo.iframeTitle')} — ${data.title}`}
-              loading="lazy"
-              referrerpolicy="no-referrer"
-              allow="fullscreen; clipboard-write"
-            ></iframe>
+        {demoUrl && (
+          <div class="demo-live">
+            <div class="demo-frame">
+              <iframe
+                src={demoUrl}
+                title={`${t('work.demo.iframeTitle')} — ${data.title}`}
+                loading="lazy"
+                referrerpolicy="no-referrer"
+                allow="fullscreen; clipboard-write"
+              ></iframe>
+            </div>
+            <div class="demo-actions">
+              <a class="btn" href={demoUrl} target="_blank" rel="noopener noreferrer">
+                {t('work.demo.openNew')}
+              </a>
+              {demo?.note ? <p class="demo-note">{demo.note}</p> : null}
+            </div>
           </div>
-          <div class="demo-actions">
-            <a class="btn" href={demoUrl} target="_blank" rel="noopener noreferrer">
-              {t('work.demo.openNew')}
-            </a>
-            {demo?.note ? <p class="demo-note">{demo.note}</p> : null}
-          </div>
-        </div>
-      ) : (
-        <div class="demo-fallback">
-          <div>
-            <p><strong>{t('work.demo.unavailable')}</strong></p>
-            <p>{demoNote}</p>
-          </div>
-          <a class="btn btn--ghost" href={mailtoHref(`${data.title} — demo request`)}>
-            {t('work.demo.request')}
-          </a>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+    )}
   </article>
 
   <!-- 上一个 / 下一个 -->

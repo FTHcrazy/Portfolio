@@ -41,7 +41,7 @@ export const ui = {
     'home.selected.note': '按时间倒序，点任意一行进入详情。',
     'home.featured.number': '02',
     'home.featured.title': 'FEATURED',
-    'home.featured.note': '两个作品，完整记录从问题到结果。',
+    'home.featured.note': '挑一个细看：从问题，到做出来，到结果。',
     'home.about.number': '03',
     'home.about.title': 'ABOUT',
     'home.about.more': '更多关于我',
@@ -50,7 +50,7 @@ export const ui = {
     // 作品索引
     'works.title': '作品',
     'works.lead':
-      '六个项目里留下的三个，都是能说清「为什么做」和「做完怎么样」的。',
+      '做过的产品与工具。点开一个，能看到它解决的问题、用起来的样子，以及最后留下什么。',
     'works.count': '项',
     'works.filterLabel': '按标签筛选',
     'works.all': '全部',
@@ -74,9 +74,6 @@ export const ui = {
     'work.demo.title': '现场演示',
     'work.demo.openNew': '新窗口打开演示',
     'work.demo.iframeTitle': '现场演示',
-    'work.demo.unavailable': '这个项目没有公开演示站点。',
-    'work.demo.availableOnRequest': '可以约一次 30 分钟的现场演示，或按 README 在本地跑起来。',
-    'work.demo.request': '发邮件约演示',
     'work.nav.prev': '上一个',
     'work.nav.next': '下一个',
     'work.nav.label': '作品导航',
@@ -127,7 +124,7 @@ export const ui = {
     'home.selected.note': 'Newest first. Open any row for the full write-up.',
     'home.featured.number': '02',
     'home.featured.title': 'FEATURED',
-    'home.featured.note': 'Two projects, documented from problem to outcome.',
+    'home.featured.note': 'One to read closely: problem, build, outcome.',
     'home.about.number': '03',
     'home.about.title': 'ABOUT',
     'home.about.more': 'More about me',
@@ -136,7 +133,7 @@ export const ui = {
     // Works index
     'works.title': 'Works',
     'works.lead':
-      'Three of six projects, chosen because I can explain both why they were built and what changed afterwards.',
+      'Products and tools I have built. Open one to see the problem it solves, what it is like to use, and what it left behind.',
     'works.count': 'projects',
     'works.filterLabel': 'Filter by tag',
     'works.all': 'All',
@@ -160,10 +157,6 @@ export const ui = {
     'work.demo.title': 'Live demo',
     'work.demo.openNew': 'Open demo in a new window',
     'work.demo.iframeTitle': 'Live demo',
-    'work.demo.unavailable': 'This project has no public demo site.',
-    'work.demo.availableOnRequest':
-      'Happy to walk through it in a 30-minute call, or follow the README and run it locally.',
-    'work.demo.request': 'Email to book a demo',
     'work.nav.prev': 'Previous',
     'work.nav.next': 'Next',
     'work.nav.label': 'Work navigation',

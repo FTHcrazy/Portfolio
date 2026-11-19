@@ -14,7 +14,7 @@ interface Props {
   title: string;
   /** meta description，缺省用 profile 里的定位描述 */
   description?: string;
-  /** og:image 路径（相对 public），缺省为示例封面 */
+  /** og:image 路径（相对 public），缺省用作品集封面 */
   ogImage?: string;
   /**
    * 语言切换入口是否显示。404 只有一份 `404.html`，切语言会指向不存在的
@@ -33,7 +33,7 @@ const {
   lang,
   title,
   description,
-  ogImage = 'media/covers/sample-01.svg',
+  ogImage = 'media/covers/novel-writer.svg',
   showLangSwitch = true,
   canonicalPath,
 } = Astro.props;

@@ -190,24 +190,78 @@ hr {
   border-color: var(--accent);
 }
 
+/* 无序表：用 1px 空心小方块作标记，与「档案册」的描边语言一致；
+   旧的「—」前缀在长条目里会把每行都拖出一个小尾巴，读起来发涩，已弃用。 */
 .prose ul {
   list-style: none;
   padding-left: 0;
-  margin: 0 0 1.3em;
+  margin: 0 0 1.5em;
 }
 
 .prose ul > li {
   position: relative;
-  padding-left: 20px;
-  margin-bottom: 0.55em;
+  padding-left: 18px;
+  margin-bottom: 1.15em;
+  line-height: 1.75;
   color: var(--ink-2);
 }
 
+.prose ul > li:last-child {
+  margin-bottom: 0;
+}
+
 .prose ul > li::before {
-  content: "—";
+  content: "";
   position: absolute;
   left: 0;
-  color: var(--ink-3);
+  top: 0.66em;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--ink-3);
+}
+
+/* 条目里的首个加粗词是「小标题」：独占一行，正文另起 ——
+   比「标签：一大段」的排法更容易扫读。 */
+.prose ul > li > strong:first-child {
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* 有序表：用于分步演示。编号用等宽朱砂，呼应分区编号。 */
+.prose ol {
+  list-style: none;
+  counter-reset: step;
+  padding-left: 0;
+  margin: 0 0 1.5em;
+}
+
+.prose ol > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 42px;
+  margin-bottom: 1.3em;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.prose ol > li:last-child {
+  margin-bottom: 0;
+}
+
+.prose ol > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.16em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.prose ol > li > strong:first-child {
+  display: block;
+  margin-bottom: 3px;
 }
 
 .prose blockquote {

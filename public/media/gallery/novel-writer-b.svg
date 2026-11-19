@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="画廊占位图 04-B，对应三栏编辑工作台：章节树、码字区与右侧辅助面板">
+  <defs>
+    <pattern id="gaNvB" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" fill="none" stroke="#dcd6c8" stroke-width="1" opacity="0.6"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="#fffdf8"/>
+  <rect width="1600" height="1000" fill="url(#gaNvB)"/>
+  <rect x="80" y="80" width="1440" height="840" fill="none" stroke="#dcd6c8" stroke-width="2"/>
+  <path d="M80 220h1440M80 780h1440" stroke="#dcd6c8" stroke-width="2"/>
+  <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#8a8578">
+    <text x="112" y="176" font-size="30" letter-spacing="8">FIG. 04-B / EDITOR</text>
+    <text x="112" y="430" font-size="62" letter-spacing="2" fill="#14130f">THREE-PANE</text>
+    <text x="112" y="500" font-size="34" letter-spacing="2" fill="#14130f">章树 · 码字 · 辅助面板</text>
+  </g>
+  <text x="112" y="700" font-family="ui-monospace, Consolas, 'Microsoft YaHei', sans-serif" font-size="24" fill="#8a8578">占位图 · 替换为三栏编辑界面实测截图（1600×1000 .webp）</text>
+  <text x="112" y="744" font-family="ui-monospace, Consolas, 'Microsoft YaHei', sans-serif" font-size="24" fill="#8a8578">应含：左卷章树、中 CodeMirror 正文、右大纲/要素/灵感/检索/工具 Tab</text>
+  <rect x="1180" y="240" width="300" height="470" fill="none" stroke="#b0392a" stroke-width="2" opacity="0.35"/>
+  <g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="260" fill="#14130f" opacity="0.05">
+    <text x="1480" y="860" text-anchor="end">04B</text>
+  </g>
+</svg>
