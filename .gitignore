@@ -1,0 +1,35 @@
+# build output
+dist/
+.output/
+
+# astro generated types
+.astro/
+
+# dependencies
+node_modules/
+.pnpm-store/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# env
+.env
+.env.production
+.env.local
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# caches
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# QA 取证目录（QA 所有，不提交）
+.qa/

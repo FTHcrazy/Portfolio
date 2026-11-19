@@ -1,0 +1,45 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { formatLastUpdated, getProfile, mailtoHref, profile } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__cta">
+      <p class="site-footer__cta-label meta">{t('footer.contactHeading')}</p>
+      <a class="site-footer__mail" href={mailtoHref()}>{profile.email}</a>
+      <p class="site-footer__hint">{t('footer.contactHint')}</p>
+    </div>
+
+    <div class="site-footer__grid">
+      <div>
+        <p class="meta">{t('footer.social')}</p>
+        <ul class="site-footer__social">
+          {profile.socials.map((social) => (
+            <li>
+              <a href={social.href} target="_blank" rel="noopener noreferrer">
+                {social.label} <span class="meta">{social.handle}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="site-footer__meta">
+        <p>© {year} {p.name}. {t('footer.rights')}</p>
+        <p class="meta">{t('footer.updated')} · {formatLastUpdated(lang)}</p>
+        <p class="meta">{t('footer.builtWith')}</p>
+      </div>
+    </div>
+  </div>
+</footer>

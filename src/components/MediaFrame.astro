@@ -1,0 +1,60 @@
+---
+import { assetUrl } from '../i18n/utils';
+
+/**
+ * 媒体框：封面图或「悬停 / 聚焦自动播放」的短视频。
+ * 全站**唯一**的媒体渲染入口（AGENTS.md §8）：封面、画廊、演示视频都经过这里。
+ *
+ * - 无 `video` → 渲染图片元素（lazy + async decode，首屏可传 `priority`）。
+ * - 有 `video` → 渲染 `<video muted loop playsinline preload="none" poster>`，
+ *   播放/暂停由 BaseLayout 中的内联脚本统一接管（`data-hover-play`），
+ *   并遵守 `prefers-reduced-motion`（不自动播放）。
+ * - 支持默认插槽：画廊会把「放大」按钮投进来，覆盖在媒体之上。
+ */
+interface Props {
+  /** 封面 / poster 路径，相对 public，例如 `media/covers/sample-01.svg` */
+  poster: string;
+  /** 可选短视频路径（mp4），一般来自 `media/demo/` 或 `media/gallery/` */
+  video?: string;
+  /** 图片或视频的文字说明 */
+  alt: string;
+  /** 宽高比，CSS aspect-ratio 值 */
+  ratio?: string;
+  /** 首屏媒体传 true，跳过懒加载 */
+  priority?: boolean;
+}
+
+const { poster, video, alt, ratio = '16 / 9', priority = false } = Astro.props;
+
+const posterSrc = assetUrl(poster);
+const videoSrc = video ? assetUrl(video) : undefined;
+const loadingMode = priority ? 'eager' : 'lazy';
+---
+
+<figure class="media-frame" data-mode={videoSrc ? 'video' : 'image'} style={`--media-ratio:${ratio}`}>
+  {videoSrc ? (
+    <video
+      class="media-frame__media"
+      poster={posterSrc}
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-label={alt}
+      data-hover-play
+    >
+      <source src={videoSrc} type="video/mp4" />
+    </video>
+  ) : (
+    <img
+      class="media-frame__media"
+      src={posterSrc}
+      alt={alt}
+      loading={loadingMode}
+      decoding="async"
+      width="1600"
+      height="1000"
+    />
+  )}
+  <slot />
+</figure>

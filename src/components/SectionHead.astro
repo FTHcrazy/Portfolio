@@ -1,0 +1,27 @@
+---
+/**
+ * 区块标题：`01 / SELECTED WORKS`
+ * 等宽小号大写字母 + 两位编号 + 1px 横线，是整站的节奏锚点。
+ */
+interface Props {
+  /** 两位编号，例如 `01` */
+  number: string;
+  /** 大写标题，例如 `SELECTED WORKS` */
+  title: string;
+  /** 右侧补充说明（可选） */
+  note?: string;
+  /** 供 aria-labelledby 引用的 id */
+  id?: string;
+}
+
+const { number, title, note, id } = Astro.props;
+---
+
+<div class="section-head">
+  <div class="section-head__id">
+    <span class="section-head__no meta">{number}</span>
+    <span class="meta" aria-hidden="true">/</span>
+    <h2 class="section-head__title" id={id}>{title}</h2>
+  </div>
+  {note ? <p class="section-head__note">{note}</p> : null}
+</div>

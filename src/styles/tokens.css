@@ -1,0 +1,46 @@
+/* ==========================================================================
+   tokens.css — 设计令牌（唯一改配色的地方）
+   概念：工程档案册。纸色底、墨色字、1px 线、朱砂点缀、直角、零阴影。
+   ========================================================================== */
+
+:root {
+  /* ---- 纸与墨 ---- */
+  --paper: #f6f4ee;
+  --paper-raised: #fffdf8;
+  --ink: #14130f;
+  --ink-2: #4b4740;
+  --ink-3: #726c5e;
+  --line: #dcd6c8;
+  --accent: #b0392a;
+  --accent-soft: #f1e3dd;
+
+  /* ---- 字体：只用系统字体栈，禁止外链字体 ---- */
+  --font-sans: "PingFang SC", "Microsoft YaHei UI", "Hiragino Sans GB",
+    "Source Han Sans SC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", "JetBrains Mono",
+    Consolas, monospace;
+
+  /* ---- 版心与间距 ---- */
+  --maxw: 1180px;
+  --pad: clamp(20px, 5vw, 64px);
+
+  /* ---- 排版尺度 ---- */
+  --fs-display: clamp(2.6rem, 6.4vw, 5.2rem);
+  --lh-display: 1.04;
+  --ls-display: -0.02em;
+  --fs-body: 1.0625rem;
+  --lh-body: 1.85;
+  --fs-meta: 0.78rem;
+  --ls-meta: 0.12em;
+
+  /* ---- 结构 ---- */
+  --radius: 0;
+  --rule: 1px solid var(--line);
+  --rule-strong: 1px solid var(--ink);
+
+  /* ---- 动效（prefers-reduced-motion 时被 base.css 关闭） ---- */
+  --t-fast: 0.18s;
+  --t-base: 0.26s;
+  --t-slow: 0.5s;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}

@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { assetUrl, langFromEntryId, localizePath, slugFromEntryId, useTranslations } from '../i18n/utils';
+import { getProfile } from '../data/profile';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorksExplorer from '../components/react/WorksExplorer.tsx';
+import type { WorkItem } from '../components/react/WorksExplorer.tsx';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+
+const works = (
+  await getCollection('works', ({ id, data }) => langFromEntryId(id) === lang && !data.draft)
+).sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year);
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+
+/** 所有路径在这里算好（含 BASE_URL），再作为纯字符串 prop 交给 React 岛 */
+const items: WorkItem[] = works.map((work, i) => {
+  const slug = slugFromEntryId(work.id);
+  return {
+    slug,
+    href: localizePath(`works/${slug}/`, lang),
+    index: pad(i + 1),
+    title: work.data.title,
+    summary: work.data.summary,
+    year: work.data.year,
+    tags: work.data.tags,
+    stack: work.data.stack,
+    cover: assetUrl(work.data.cover),
+    coverAlt: work.data.coverAlt || work.data.title,
+  };
+});
+
+const labels = {
+  filterLabel: t('works.filterLabel'),
+  all: t('works.all'),
+  searchLabel: t('works.searchLabel'),
+  searchPlaceholder: t('works.searchPlaceholder'),
+  resultCount: t('works.resultCount'),
+  empty: t('works.empty'),
+  clear: t('works.clear'),
+};
+---
+
+<BaseLayout lang={lang} title={`${t('works.title')} — ${p.name}`}>
+  <div class="wrap page-head">
+    <h1 class="display page-head__title">{t('works.title')}</h1>
+    <p class="lead page-head__lead">{t('works.lead')}</p>
+  </div>
+
+  <section class="wrap section section--flush" aria-label={t('works.title')}>
+    {/* client:load —— 筛选 chips 位于首屏，必须立刻响应输入；
+        AGENTS.md §8 允许此例外，理由即在此。SSR 输出已含完整列表，无 JS 可读。 */}
+    <WorksExplorer items={items} labels={labels} client:load />
+  </section>
+</BaseLayout>

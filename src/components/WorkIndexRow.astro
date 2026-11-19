@@ -1,0 +1,39 @@
+---
+import { assetUrl } from '../i18n/utils';
+
+/**
+ * 首页作品目录行：grid `56px 1fr 1fr 88px`。
+ * 悬停整行变亮、标题右移 4px，并在行右侧淡入 220×140 封面缩略图（≤900px 隐藏）。
+ */
+interface Props {
+  index: string;
+  title: string;
+  stack: string[];
+  year: number;
+  href: string;
+  cover: string;
+  coverAlt: string;
+}
+
+const { index, title, stack, year, href, cover, coverAlt } = Astro.props;
+---
+
+<li>
+  <a class="index-row" href={href}>
+    <span class="index-row__no meta">{index}</span>
+    <span class="index-row__title">{title}</span>
+    <span class="index-row__stack meta">{stack.join(' · ')}</span>
+    <span class="index-row__year meta">{year}</span>
+    <span class="index-row__thumb" aria-hidden="true">
+      <img
+        src={assetUrl(cover)}
+        alt=""
+        title={coverAlt}
+        loading="lazy"
+        decoding="async"
+        width="220"
+        height="140"
+      />
+    </span>
+  </a>
+</li>

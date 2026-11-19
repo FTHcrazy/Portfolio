@@ -1,0 +1,23 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import WorkDetailView from '../../../views/WorkDetailView.astro';
+import { langFromEntryId, slugFromEntryId } from '../../../i18n/utils';
+
+interface Props {
+  entry: CollectionEntry<'works'>;
+}
+
+export async function getStaticPaths() {
+  const entries = await getCollection('works', ({ data }) => !data.draft);
+  return entries
+    .filter((entry) => langFromEntryId(entry.id) === 'en')
+    .map((entry) => ({
+      params: { slug: slugFromEntryId(entry.id) },
+      props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+---
+
+<WorkDetailView lang="en" entry={entry} />

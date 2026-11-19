@@ -1,0 +1,25 @@
+---
+import type { Lang } from '../i18n/ui';
+import { otherLang, switchLangPath, useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 当前页面 URL，用于保留路径只切语言前缀 */
+  url: URL;
+}
+
+const { lang, url } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+const otherHref = switchLangPath(url, other);
+---
+
+<div class="lang-switch" role="group" aria-label={t('lang.switchLabel')}>
+  <span class="lang-switch__item lang-switch__item--current" aria-current="true">{t('lang.self')}</span>
+  <a
+    class="lang-switch__item lang-switch__item--link"
+    href={otherHref}
+    hreflang={other}
+    lang={other}
+  >{t('lang.other')}</a>
+</div>

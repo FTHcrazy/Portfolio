@@ -1,0 +1,45 @@
+---
+import type { Lang } from '../i18n/ui';
+import { localizePath, switchLangPath, useTranslations } from '../i18n/utils';
+import { getProfile } from '../data/profile';
+import LangSwitch from './LangSwitch.astro';
+
+interface Props {
+  lang: Lang;
+  url: URL;
+  /** 404 这类单语言页面传 false：此时语言切换会指向不存在的路由 */
+  showLangSwitch?: boolean;
+}
+
+const { lang, url, showLangSwitch = true } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+
+/** 去掉 query / hash，得到当前页的规范路径，用于判断导航高亮。 */
+const here = switchLangPath(url, lang).split('?')[0]?.split('#')[0] ?? '';
+const homeHref = localizePath('', lang);
+const worksHref = localizePath('works/', lang);
+const aboutHref = localizePath('about/', lang);
+const isWorks = here.startsWith(worksHref);
+const isAbout = here.startsWith(aboutHref);
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="site-header__id" href={homeHref}>
+      <span class="site-header__name">{p.name}</span>
+      <span class="site-header__role meta">{p.role}</span>
+    </a>
+
+    <nav class="site-nav" aria-label={t('nav.primary')}>
+      <a class="site-nav__link" href={worksHref} aria-current={isWorks ? 'page' : undefined}>
+        {t('nav.works')}
+      </a>
+      <a class="site-nav__link" href={aboutHref} aria-current={isAbout ? 'page' : undefined}>
+        {t('nav.about')}
+      </a>
+    </nav>
+
+    {showLangSwitch && <LangSwitch lang={lang} url={url} />}
+  </div>
+</header>

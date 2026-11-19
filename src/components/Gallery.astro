@@ -1,0 +1,91 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import MediaFrame from './MediaFrame.astro';
+
+/**
+ * 功能预览画廊：两列网格，点击任意一图打开原生 `<dialog>` lightbox。
+ *
+ * 媒体本身交给 `MediaFrame` 渲染（AGENTS.md §8：唯一媒体入口），
+ * 这里只把「放大」按钮作为插槽投进去覆盖在媒体上 —— 这样尺寸、懒加载、
+ * `poster`、`muted`/`loop` 等属性与其他页面完全一致。
+ * lightbox 交互（← / → / Esc、焦点回到触发元素、点背板关闭）
+ * 由 BaseLayout 里的内联脚本实现，本文件不引入任何 JS 框架。
+ */
+interface GalleryItem {
+  src: string;
+  caption?: string;
+  video?: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+  lang: Lang;
+}
+
+const { items, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+---
+
+{items.length > 0 && (
+  <div class="gallery" data-gallery>
+    {items.map((item, i) => {
+      const label = `${t('work.gallery.figure')} ${pad(i + 1)}`;
+      const altText = item.caption ?? label;
+      return (
+        <figure class="gallery__item">
+          <MediaFrame poster={item.src} video={item.video} alt={altText} ratio="16 / 10">
+            <button
+              type="button"
+              class="gallery__trigger"
+              data-lightbox-trigger
+              data-caption={item.caption ?? ''}
+            >
+              <span class="gallery__index meta" aria-hidden="true">{pad(i + 1)}</span>
+              <span class="sr-only">{label}</span>
+            </button>
+          </MediaFrame>
+          {item.caption ? <figcaption class="gallery__caption">{item.caption}</figcaption> : null}
+        </figure>
+      );
+    })}
+  </div>
+)}
+
+{items.length > 0 && (
+  <dialog class="lightbox" data-lightbox aria-label={t('work.preview.title')}>
+    <div class="lightbox__bar">
+      <span class="lightbox__count meta" data-lightbox-count></span>
+      <button type="button" class="btn btn--ghost" data-lightbox-close>
+        {t('work.lightbox.close')}
+      </button>
+    </div>
+    <div class="lightbox__stage">
+      <img
+        class="lightbox__img"
+        data-lightbox-img
+        alt=""
+        decoding="async"
+        width="1600"
+        height="1000"
+      />
+    </div>
+    <div class="lightbox__foot">
+      <button
+        type="button"
+        class="btn btn--ghost"
+        data-lightbox-prev
+        aria-label={t('work.lightbox.prev')}
+      >&larr;</button>
+      <p class="lightbox__caption" data-lightbox-caption></p>
+      <button
+        type="button"
+        class="btn btn--ghost"
+        data-lightbox-next
+        aria-label={t('work.lightbox.next')}
+      >&rarr;</button>
+    </div>
+  </dialog>
+)}

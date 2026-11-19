@@ -1,0 +1,20 @@
+---
+/**
+ * 标签列表（等宽小号大写）。纯展示，无交互。
+ */
+interface Props {
+  items: string[];
+  /** 强调样式（朱砂描边），用于当前筛选等场景 */
+  accent?: boolean;
+}
+
+const { items, accent = false } = Astro.props;
+---
+
+{items.length > 0 && (
+  <ul class="tag-list">
+    {items.map((item) => (
+      <li class={accent ? 'tag tag--accent' : 'tag'}>{item}</li>
+    ))}
+  </ul>
+)}

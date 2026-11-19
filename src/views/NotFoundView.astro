@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { assetUrl, langFromEntryId, localizePath, otherLang, slugFromEntryId, useTranslations } from '../i18n/utils';
+import { getProfile } from '../data/profile';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkCard from '../components/WorkCard.astro';
+
+/**
+ * 404 页面级组合。
+ *
+ * 断链给两条出路：回首页，或直接从三个作品进入 —— 后者复用 `WorkCard`，
+ * 保证卡片外观与 `/works` 完全一致（类名同源于 components.css）。
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+
+/**
+ * 404 是唯一单语页面（只生成 `404.html`），所以不渲染 `LangSwitch` ——
+ * 那会指向并不存在的 `/en/404/`。改用一条纯文本链接把英文访客送出去。
+ */
+const otherLangHref = localizePath('', otherLang(lang));
+const otherLangLabel = t('404.otherLang');
+
+const suggestions = (
+  await getCollection('works', ({ id, data }) => langFromEntryId(id) === lang && !data.draft)
+)
+  .sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year)
+  .slice(0, 3);
+---
+
+<BaseLayout
+  lang={lang}
+  title={`404 — ${p.name}`}
+  showLangSwitch={false}
+  canonicalPath={assetUrl('404.html')}
+>
+  <section class="wrap notfound">
+    <span class="notfound__code meta">ERROR / 404</span>
+    <h1 class="display">{t('404.title')}</h1>
+    <p class="notfound__lead">{t('404.lead')}</p>
+    <a class="btn" href={localizePath('', lang)}>{t('404.back')}</a>
+
+    <p class="notfound__lang">
+      <a href={otherLangHref} hreflang={otherLang(lang)}>{otherLangLabel}</a>
+    </p>
+
+    {suggestions.length > 0 && (
+      <div class="notfound__suggest">
+        <p class="meta">{t('404.suggest')}</p>
+        <ul class="explorer__grid">
+          {suggestions.map((work, i) => (
+            <li>
+              <WorkCard
+                index={pad(i + 1)}
+                title={work.data.title}
+                summary={work.data.summary}
+                year={work.data.year}
+                tags={work.data.tags}
+                cover={work.data.cover}
+                coverAlt={work.data.coverAlt || work.data.title}
+                href={localizePath(`works/${slugFromEntryId(work.id)}/`, lang)}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+</BaseLayout>

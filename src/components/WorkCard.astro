@@ -1,0 +1,49 @@
+---
+import { assetUrl } from '../i18n/utils';
+
+/**
+ * 作品卡片。结构与类名与 React 岛 `WorksExplorer.tsx` **完全一致**，
+ * 外观只在 `src/styles/components.css` 的 `.work-card*` 中定义。
+ */
+interface Props {
+  index: string;
+  title: string;
+  summary: string;
+  year: number;
+  tags: string[];
+  cover: string;
+  coverAlt: string;
+  href: string;
+}
+
+const { index, title, summary, year, tags, cover, coverAlt, href } = Astro.props;
+---
+
+<article class="work-card">
+  <a class="work-card__link" href={href}>
+    <div class="work-card__media">
+      <img
+        class="work-card__img"
+        src={assetUrl(cover)}
+        alt={coverAlt}
+        loading="lazy"
+        decoding="async"
+        width="1600"
+        height="1000"
+      />
+    </div>
+    <div class="work-card__body">
+      <p class="work-card__meta meta">
+        <span>{index}</span>
+        <span>{year}</span>
+      </p>
+      <h3 class="work-card__title">{title}</h3>
+      <p class="work-card__summary">{summary}</p>
+      <ul class="work-card__tags">
+        {tags.map((tag) => (
+          <li class="tag">{tag}</li>
+        ))}
+      </ul>
+    </div>
+  </a>
+</article>

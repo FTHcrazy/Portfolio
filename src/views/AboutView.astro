@@ -1,0 +1,99 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { getProfile, mailtoHref, profile } from '../data/profile';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHead from '../components/SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+
+/** 第一段作为导语，其余作为正文，避免同一段话出现两次 */
+const lead = p.bio[0] ?? '';
+const rest = p.bio.slice(1);
+---
+
+<BaseLayout lang={lang} title={`${t('about.title')} — ${p.name}`}>
+  <div class="wrap page-head">
+    <h1 class="display page-head__title">{t('about.title')}</h1>
+    <p class="lead page-head__lead">{lead}</p>
+  </div>
+
+  <section class="wrap section" aria-label={t('about.title')}>
+    <div class="bio">
+      {rest.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <!-- 01 / SKILLS -->
+  <section class="wrap section" aria-labelledby="skills-heading">
+    <SectionHead
+      number={t('about.skills.number')}
+      title={t('about.skills.title')}
+      id="skills-heading"
+    />
+    <div class="skills">
+      {p.skills.map((group) => (
+        <div>
+          <p class="skills__label meta">{group.label}</p>
+          <ul class="skills__items">
+            {group.items.map((item) => (
+              <li class="tag">{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 02 / EXPERIENCE -->
+  <section class="wrap section" aria-labelledby="timeline-heading">
+    <SectionHead
+      number={t('about.timeline.number')}
+      title={t('about.timeline.title')}
+      id="timeline-heading"
+    />
+    <ol class="timeline">
+      {p.timeline.map((item) => (
+        <li class="timeline__item">
+          <span class="timeline__period meta">{item.period}</span>
+          <h3 class="timeline__title">{item.title}</h3>
+          <p class="timeline__org">{item.org}</p>
+          <p class="timeline__desc">{item.description}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 03 / CONTACT -->
+  <section class="wrap section" aria-labelledby="contact-heading">
+    <SectionHead
+      number={t('about.contact.number')}
+      title={t('about.contact.title')}
+      note={t('about.contact.note')}
+      id="contact-heading"
+    />
+    <ul class="contact-list">
+      <li>
+        <span class="contact-list__label meta">Email</span>
+        <a class="contact-list__value" href={mailtoHref()}>{profile.email}</a>
+      </li>
+      {profile.socials.map((social) => (
+        <li>
+          <span class="contact-list__label meta">{social.label}</span>
+          <a
+            class="contact-list__value"
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >{social.handle}</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

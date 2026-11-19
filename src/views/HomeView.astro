@@ -1,0 +1,138 @@
+---
+import { getCollection } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { langFromEntryId, localizePath, slugFromEntryId, useTranslations } from '../i18n/utils';
+import { getProfile, mailtoHref, profile } from '../data/profile';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHead from '../components/SectionHead.astro';
+import WorkIndexRow from '../components/WorkIndexRow.astro';
+import MediaFrame from '../components/MediaFrame.astro';
+import TagList from '../components/TagList.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = getProfile(lang);
+
+const works = (
+  await getCollection('works', ({ id, data }) => langFromEntryId(id) === lang && !data.draft)
+).sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year);
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+const featured = works.filter((work) => work.data.featured);
+const workHref = (work: (typeof works)[number]): string =>
+  localizePath(`works/${slugFromEntryId(work.id)}/`, lang);
+
+const skillTags = p.skills.flatMap((group) => group.items);
+---
+
+<BaseLayout lang={lang} title={`${p.name} — ${p.role}`}>
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Hero                                                                -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="wrap hero">
+    <span class="hero__kicker meta">{t('home.kicker')}</span>
+    <h1 class="display hero__title">{p.name}</h1>
+    <p class="hero__tagline">{p.tagline}</p>
+
+    <p class="hero__meta meta">
+      <span>{p.location}</span>
+      <a href={mailtoHref()}>{profile.email}</a>
+      <span class="meta--accent">{p.status}</span>
+    </p>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- 01 / SELECTED WORKS —— 目录表，不是卡片                              -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="wrap section" aria-labelledby="works-heading">
+    <SectionHead
+      number={t('home.selected.number')}
+      title={t('home.selected.title')}
+      note={t('home.selected.note')}
+      id="works-heading"
+    />
+
+    <ul class="index-table">
+      {works.map((work, i) => (
+        <WorkIndexRow
+          index={pad(i + 1)}
+          title={work.data.title}
+          stack={work.data.stack}
+          year={work.data.year}
+          href={workHref(work)}
+          cover={work.data.cover}
+          coverAlt={work.data.coverAlt || work.data.title}
+        />
+      ))}
+    </ul>
+
+    <div class="index-table__foot">
+      <a class="feature__link" href={localizePath('works/', lang)}>{t('home.allWorks')} &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- 02 / FEATURED —— 图左文右，第二个起左右交替                          -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="wrap section" aria-labelledby="featured-heading">
+    <SectionHead
+      number={t('home.featured.number')}
+      title={t('home.featured.title')}
+      note={t('home.featured.note')}
+      id="featured-heading"
+    />
+
+    <div class="feature-list">
+      {featured.map((work, i) => (
+        <article class="feature">
+          <div class="feature__media">
+            <MediaFrame
+              poster={work.data.demo?.poster ?? work.data.cover}
+              video={work.data.demo?.video}
+              alt={work.data.coverAlt || work.data.title}
+              ratio="16 / 10"
+            />
+          </div>
+          <div class="feature__body">
+            <span class="feature__no meta">{pad(i + 1)}</span>
+            <h3 class="feature__title">
+              <a href={workHref(work)}>{work.data.title}</a>
+            </h3>
+            <p class="feature__tagline">{work.data.tagline}</p>
+            <p class="feature__stack meta">{work.data.stack.join(' · ')} · {work.data.year}</p>
+            <a class="feature__link" href={workHref(work)}>
+              {work.data.title} &rarr;
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- 03 / ABOUT                                                          -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="wrap section" aria-labelledby="about-heading">
+    <SectionHead
+      number={t('home.about.number')}
+      title={t('home.about.title')}
+      id="about-heading"
+    />
+
+    <div class="bio">
+      {p.shortBio.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <div class="home-about__skills">
+      <TagList items={skillTags} />
+    </div>
+
+    <p class="home-about__more">
+      <a class="feature__link" href={localizePath('about/', lang)}>{t('home.about.more')} &rarr;</a>
+    </p>
+  </section>
+</BaseLayout>
